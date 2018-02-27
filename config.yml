@@ -1,0 +1,42 @@
+SystemName: MWS KONTO
+mwsbanking: konto.banking.use
+permErrorpb: Dir fehlt die Berechtigung die Itembank zu nutzen. konto.banking.use
+PlayerBankSaveMessageTitel: ItemBank gespeichert
+BankName: Spieler Itembank
+Slots: 54
+PlayerImmuneInBank: true
+mwsvipbanking: konto.vbanking.use
+permErrorv: Dir fehlt die Berechtigung die Vip Itembank zu nutzen. konto.vbanking.use
+VipBankSaveMessageTitel: VipItemBank gespeichert
+VipBankName: Spieler Vip Itembank
+VipSlots: 54
+PlayerImmuneInVipBank: true
+holdings: 10.0
+maxholdings: -1
+prefix: $$$
+topsize: 5
+currency:
+  negative: false
+  major:
+    single: $
+    multiple: $
+  minor:
+    enabled: false
+    single: $
+    multiple: $
+  prefix: ''
+type: sqlite
+autoclean: true
+mysql:
+  host: localhost
+  port: 3306
+  user: root
+  password: minecraft
+  database: MWSmones
+  tables:
+    accounts: money_accounts
+  columns:
+    accounts:
+      username: name
+      money: money
+      uuid: uuid

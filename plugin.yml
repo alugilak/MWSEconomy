@@ -1,0 +1,87 @@
+name: MultiWorldSystemEconomy
+main: de.mws.econ.konto
+version: 1.0
+description: recode based on the original Fe 
+website: https://www.spigotmc.org/resources/fe.723/
+load: startup
+
+commands:
+  itembank:
+    usage: /<command> 
+    description: Checks your Itembank /itembank
+  vipitembank:
+    usage: /<command> 
+    description: Checks your VipItembank /vipitembank   
+  konto:
+    usage: /<command> <name>
+    description: Checks your konto
+    aliases:
+    - konto
+  konto ?:
+    usage: /<konto> <?>
+    description: List help for konto
+    aliases:
+    - konto ?    
+
+softdepend:
+- Vault
+
+permissions:
+  konto.banking.use:
+    description: Erlaubt es Spielern eine Itembank zu benutzen /itembank
+    default: false
+  konto.vbanking.use:
+    description: Erlaubt es Vip Spielern eine zusaetzliche VipItembank zu benutzen /vipitembank
+    default: false    
+  konto.konto:
+    description: Ermoeglicht Ihnen, Ihr Konto mit dem Befehl / konto zu ueberpruefen
+    default: true
+  konto.konto.other:
+    description: Erlaubt das Ueberpruefen der Kontos anderer Spieler mit dem Befehl / konto name
+    default: true
+  konto.send:
+    description: Erlaubt ihnen das senden von Geld an andere Spieler mit dem Befehl /konto senden
+    default: true
+  konto.top:
+    description: Zeigt dir die 5 reichsten Spieler an mit dem Befehl /konto top 
+    default: true
+  konto.?:
+    description: Zeigt dir die Hilfe an mit dem Befehl /konto ?
+    default: true
+  konto.create:
+    description: Erlaubt das Erstellen eines Kontos /konto erstellen
+  konto.remove:
+    description: Erlaubt es ein Konto zu loeschen /konto konto-
+  konto.set:
+    description: Erlaubt es, das Konto eines anderen Spielers mit dem Befehl /konto setzen <Spielername> <Geldmenge> zu setzen
+  konto.grant:
+    description: Erlaubt es Spielern, Geld mit dem Befehl /konto + <Spielername> <Geldmenge> dem Spieler zu geben
+  konto.deduct:
+    description: Erlaubt es Spielern, Geld mit dem Befehl /konto - <Spielername> <Geldmenge> vom Spieler zu nehmen
+  konto.clean:
+    description: Entfernt alle Konten mit dem Standard Startguthaben /konto standard
+  konto.reload:
+    description: Erlaubt es die confiruation neu zu laden
+  konto.notify:
+    description: Erlaubt es eine Nachricht zu erhalten wenn eine neue Version vorhanden ist!
+  konto.member:
+    children:
+      konto.konto: true
+      konto.konto.other: true
+      konto.send: true
+      konto.top: true
+      konto.?: true
+  konto.admin:
+    children:
+      konto.create: true
+      konto.remove: true
+      konto.set: true
+      konto.grant: true
+      konto.deduct: true
+      konto.clean: true
+      konto.reload: true
+      konto.notify: true
+  konto.*:
+    children:
+      konto.member: true
+      konto.admin: true
