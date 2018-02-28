@@ -1,11 +1,11 @@
 SystemName: MWS KONTO
-mwsbanking: konto.banking.use
+mwsbanking: konto.pbank
 permErrorpb: Dir fehlt die Berechtigung die Itembank zu nutzen. konto.banking.use
 PlayerBankSaveMessageTitel: ItemBank gespeichert
 BankName: Spieler Itembank
 Slots: 54
 PlayerImmuneInBank: true
-mwsvipbanking: konto.vbanking.use
+mwsvipbanking: konto.vbank
 permErrorv: Dir fehlt die Berechtigung die Vip Itembank zu nutzen. konto.vbanking.use
 VipBankSaveMessageTitel: VipItemBank gespeichert
 VipBankName: Spieler Vip Itembank

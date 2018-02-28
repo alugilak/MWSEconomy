@@ -1,0 +1,6 @@
+S1Deduct: 
+- "take"
+S2Deduct:
+- "konto.-"
+S3Deduct: 
+- "take [name] [amount]"

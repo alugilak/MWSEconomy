@@ -2,12 +2,14 @@ package de.mws.econ;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import java.lang.reflect.*;
 
 import org.bukkit.Bukkit;
@@ -26,6 +28,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -49,11 +52,12 @@ public class konto  extends JavaPlugin implements Listener
     public static Inventory inventory = null;    
 
     
-einstellungen settings = einstellungen.getInstance();
+public einstellungen settings = einstellungen.getInstance();
 FileConfiguration data;
 File dfile;
-FileConfiguration vdata;
-File vfile;
+FileConfiguration b2data ;
+File b2;
+
     private final Set<Database> databases;
     private API api;
     private Database database;
@@ -64,27 +68,29 @@ File vfile;
     }
 
     public void onEnable()
-    {	
-    	
-    	
-        getDataFolder().mkdirs();
-
+    {	        getDataFolder().mkdirs();
         expression.init( this );
-        this.data = getConfig();
+        
+        this.data = getConfig();        
         this.saveDefaultConfig();
+        
         this.data.options().copyDefaults(true);
-        this.vdata = getConfig();        
-        this.vdata.options().copyDefaults(true);
+        this.b2data = getConfig();        
+        this.b2data.options().copyDefaults(true);
         this.settings.setup(this);
         this.settings.saveData();
-        this.settings.savevData();
+        this.settings.saveb2Data();
+       
         databases.add( new MySQLDB( this ) );
         databases.add( new SQLiteDB( this ) );
         saveDefaultConfig();
         this.saveConfig();
 	    saveConfig();	    
-	    this.settings.reloadvData();	
+	    saveResource("commands.yml", true);
+	    	
 	    this.settings.reloadData();
+	    this.settings.reloadb2Data();
+	  	    
 		  org.bukkit.plugin.PluginManager pm1 = org.bukkit.Bukkit.getPluginManager();		  
 		  pm1.registerEvents(this, this); 
 		  checkUpdate();
@@ -115,7 +121,6 @@ File vfile;
                 "prefix - Was im Chat vor allem stehen soll wenn MWS Konto Mitteilungen sendet\n" +
                 "currency - Der Name der Währung\n" +
                 "type - Die Datenbank die genutzt wird (sqlite, mysql, or mongo)" );
-
         saveConfig();
 
         api = new API( this );
@@ -264,7 +269,7 @@ File vfile;
 
     private void setupexpressions()
     {
-        File expressionsFile = new File( getDataFolder(), "expressions.yml" );
+        File expressionsFile = new File( getDataFolder(), "messages.yml" );
 
         for( expression expression : expression.values() )
         {
@@ -412,24 +417,22 @@ File vfile;
 	    if (((event.getEntity() instanceof Player)) && (getPlayerBank2().containsKey(event.getEntity()))) {
 	        if (getConfig().getBoolean("PlayerImmuneInVipBank")) {
 	          event.setCancelled(true);}}}
-      
-    
 	  @EventHandler
-	  public void PlayerJoin(PlayerLoginEvent event) {		  
-		int b1 = getConfig().getInt("Slots");		  
+	  public void PlayerJoin(PlayerLoginEvent event) {	
+		  getConfig().set(event.getPlayer().getUniqueId().toString() + event.getPlayer() + ".Pslots", 6);
+		int b1 = getConfig().getInt(event.getPlayer().getUniqueId().toString()+ event.getPlayer() + ".Pslots" );		  
 		  if (!this.settings.getData().contains(event.getPlayer().getUniqueId().toString())) {
 		      for (int slotIndex = 0; slotIndex != b1; slotIndex++)
-		      {
-		    	  this.settings.getData().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex, new ItemStack(Material.AIR));
+		      {		this.settings.getData().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex, new ItemStack(Material.AIR));
 		    	  this.settings.saveData();}
 		    	  			  
-			int b2 = getConfig().getInt("VipSlots");
-		      if (!this.settings.getvData().contains(event.getPlayer().getUniqueId().toString())) {
+			int b2 = getConfig().getInt(event.getPlayer().getUniqueId().toString()+ event.getPlayer() + ".Vslots" );	
+		      if (!this.settings.getb2Data().contains(event.getPlayer().getUniqueId().toString())) {
+		    	  getConfig().set(event.getPlayer().getUniqueId().toString() + event.getPlayer() + ".Vslots", 6);
 			      for (int slotIndex1 = 0; slotIndex1 != b2; slotIndex1++)
 			      {
-			    	  this.settings.getvData().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex1, new ItemStack(Material.AIR));
-			        
-			    	  this.settings.savevData();}}}}
+			    	  this.settings.getb2Data().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex1, new ItemStack(Material.AIR));			    	  
+			    	  this.settings.saveb2Data();}}}}
 	  
 	  @EventHandler
 	  public void inventoryCloseEvent(InventoryCloseEvent event)
@@ -437,7 +440,8 @@ File vfile;
 	    if (((event.getPlayer() instanceof Player)) && 
 	      (getPlayerBank().containsKey(event.getPlayer())))
 	    {
-		 int b1 = getConfig().getInt("Slots");
+	    	
+		 int b1 = getConfig().getInt(event.getPlayer().getUniqueId().toString()+ event.getPlayer() + ".Pslots" );
 	      Inventory inventory = getPlayerBank().get(event.getPlayer());
 	      for (int slotIndex = 0; slotIndex != b1; slotIndex++)
 	      {
@@ -457,7 +461,7 @@ File vfile;
 	    if (((event.getPlayer() instanceof Player)) && 
 	  	      (getPlayerBank2().containsKey(event.getPlayer())))
 	  	    {
-			 int b2 = getConfig().getInt("VipSlots");
+			 int b2 = getConfig().getInt(event.getPlayer().getUniqueId().toString()+ event.getPlayer() + ".Vslots" );
 	  	      Inventory inventory1 = (Inventory)getPlayerBank2().get(event.getPlayer());
 	  	      for (int slotIndex1 = 0; slotIndex1 != b2; slotIndex1++)
 	  	      {
@@ -467,50 +471,133 @@ File vfile;
 	  	        } else {
 	  	          itemStack1 = new ItemStack(inventory1.getItem(slotIndex1));
 	  	        }
-	  	        this.settings.getvData().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex1, itemStack1);
-	  	        this.settings.savevData();
+	  	        this.settings.getb2Data().set(event.getPlayer().getUniqueId().toString() + ".item" + slotIndex1, itemStack1);
+	  	        this.settings.saveb2Data();
 	  	      }
 	  	      event.getPlayer().sendMessage(ChatColor.YELLOW + getConfig().getString("VipBankSaveMessageTitel") + ChatColor.AQUA + " " + event.getPlayer().getName());
 	  	      
 	  	      getPlayerBank2().remove(event.getPlayer());}
 	  	    }
+	  public static FileConfiguration loadYaml(JavaPlugin instance, String path) {
+		    if(instance == null) {
+		        throw new IllegalArgumentException("Instance of the plugin is null!");
+		    } else if(path != null && !path.equals("")) {
+		        if(!path.endsWith(".yml")) {
+		            path = path + ".yml";
+		        }
+
+		        boolean tab = path.toLowerCase().contains("tabs" + File.separator);
+		        File file = new File(instance.getDataFolder(), path);
+		        if(file.isDirectory()) {
+		            file.delete();
+		        }
+
+		        if(!file.exists()) {
+		            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "Can't find file \"" + path + "\"");
+		            Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "Creating some one for you...");
+
+		            try {
+		                instance.saveResource(path, true);
+		                Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Completed!");
+		            } catch (Exception var7) {
+		                if(!tab) {
+		                    instance.getLogger().log(Level.SEVERE, "Failed to load resourse " + path);
+		                    return null;
+		                }
+
+		                try {
+		                    file.createNewFile();
+		                    Bukkit.getConsoleSender().sendMessage(ChatColor.GREEN + "Completed!");
+		                    Bukkit.getConsoleSender().sendMessage(ChatColor.GOLD + "File will be empty Fill it yourself!");
+		                    return YamlConfiguration.loadConfiguration(file);
+		                } catch (IOException var6) {
+		                    return null;
+		                }
+		            }
+		        }
+
+		        return YamlConfiguration.loadConfiguration(file);
+		    } else {
+		        throw new IllegalArgumentException("Path can not be null or empty!");
+		    }
+		}
+		            
+		        
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args)
     {Player p = (Player)sender;
-    if (cmd.getName().equalsIgnoreCase("itembank"))
+    if (cmd.getName().equalsIgnoreCase("pib"))
     {
-        if (!sender.hasPermission(getConfig().getString("mwsbanking")))
+    if (!(p.hasPermission(getConfig().getString("mwsbanking")) || (p.hasPermission(getConfig().getString("mwsbanking" + ".*")))))       
         {
       	  sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + (getConfig().getString("SystemName")) + ChatColor.GOLD.toString() + ChatColor.BOLD + " >" + ChatColor.BLUE + (getConfig().getString("mwsbanking")) + " " + ChatColor.GREEN + (getConfig().getString("permErrorpb")));
           p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 50);
           return false;
         }  else {  
-  	  int b1 = getConfig().getInt("Slots");
+  	  int b1 = getConfig().getInt(p.getUniqueId().toString() + p.getPlayer() + ".Pslots")  ;
       	  Inventory inventory = Bukkit.createInventory(p, b1, getConfig().getString("BankName"));
         for (int slotIndex = 0; slotIndex != b1; slotIndex++)
           inventory.setItem(slotIndex, this.settings.getData().getItemStack(p.getUniqueId().toString() + ".item" + slotIndex));      
-        p.openInventory(inventory);
-        playerBank.put(p, inventory);
-      }
+               p.openInventory(inventory);
+               playerBank.put(p, inventory);
+      
     
-  	return true;
+  	return true;}
 
     }
-    if (cmd.getName().equalsIgnoreCase("vipitembank")) 
+    if (cmd.getName().equalsIgnoreCase("vib")) 
     { if ((sender instanceof Player))  {       
-        if (!sender.hasPermission(getConfig().getString("mwsvipbanking")))
+    	this.settings.reloadb2Data();
+        if (!(p.hasPermission(getConfig().getString("mwsvipbanking")) || (p.hasPermission(getConfig().getString("mwsvipbanking" + ".*")))))
         {
       	  sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + (getConfig().getString("SystemName")) + ChatColor.GOLD.toString() + ChatColor.BOLD + " >" + ChatColor.BLUE + (getConfig().getString("mwsvipbanking")) + " " + ChatColor.GREEN + (getConfig().getString("permErrorv")));
           p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 50);
           return false;
         }  else { 
-  	 int b2 = getConfig().getInt("VipSlots");
+  	 int b2 = getConfig().getInt(p.getUniqueId().toString() + p.getPlayer() + ".Vslots");
       	  Inventory inventory1 = Bukkit.createInventory(p, b2, getConfig().getString("VipBankName"));
         for (int slotIndex1 = 0; slotIndex1 != b2; slotIndex1++)
-          inventory1.setItem(slotIndex1, this.settings.getvData().getItemStack(p.getUniqueId().toString() + ".item" + slotIndex1));      
+          inventory1.setItem(slotIndex1, this.settings.getb2Data().getItemStack(p.getUniqueId().toString() + ".item" + slotIndex1));      
         p.openInventory(inventory1);
-        playerBank2.put(p, inventory1);
-      }  
+        playerBank2.put(p, inventory1);        
   	return true;
-    }
+    }}}
+    if (cmd.getName().equalsIgnoreCase("bankadmin")) 
+    { if ((sender instanceof Player))  {    	    
+        if (!sender.hasPermission(getConfig().getString("mwsvipbanking")))
+        {
+      	  sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + (getConfig().getString("SystemName")) + ChatColor.GOLD.toString() + ChatColor.BOLD + " >" + ChatColor.BLUE + (getConfig().getString("mwsvipbanking")) + " " + ChatColor.GREEN + (getConfig().getString("permErrorv")));
+          p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 50);
+          return false;
+        }}if (args.length ==0) {        		
+        	p.sendMessage(ChatColor.GREEN +  "*****************" + ChatColor.GOLD + "MWS-ITEM-BANK-ADMINMENU-" + ChatColor.GREEN + "*******************");
+  		  p.sendMessage(ChatColor.AQUA+ "Set Slot for every Players Item Bank!");
+  		  p.sendMessage(ChatColor.GREEN +  "************************************************************");
+  		  p.sendMessage(ChatColor.AQUA+ "For Player Item Bank use " + ChatColor.DARK_PURPLE + " /bankadmin pb <PlayerName> <SlotAmount> !");
+  		  p.sendMessage(ChatColor.AQUA+ "************************************************************");
+  		  p.sendMessage(ChatColor.AQUA+ "For VIP Player Item Bank use " + ChatColor.DARK_PURPLE + " /bankadmin vb <PlayerName> <SlotAmount> ");  		 
+  		  p.sendMessage(ChatColor.GREEN +  "************************************************************");
+  		  p.sendMessage(ChatColor.AQUA+ "Permissions Playerbank:" + ChatColor.DARK_PURPLE + " konto.banking.");  		 
+		  p.sendMessage(ChatColor.GREEN +  "************************************************************");}  else {         	       
+        	if (args.length >=2) 
+        		if (args[0].equalsIgnoreCase("pb")) {
+              	int Slots = Integer.parseInt(args[2]); 
+              	Player target = Bukkit.getServer().getPlayer(args[1]);
+              	getConfig().set(target.getPlayer().getUniqueId().toString() + target.getPlayer() + ".Pslots", Slots);                               
+              	saveConfig();
+                reloadConfig();{
+		    		p.sendMessage("Player Item Bank Slots gespeichert");
+     return true;}}else {  
+                if (args.length >=2) 
+            		if (args[0].equalsIgnoreCase("vb")) {
+                  	int VSlots = Integer.parseInt(args[2]); 
+                  	Player Vtarget = Bukkit.getServer().getPlayer(args[1]);
+                  	getConfig().set(Vtarget.getPlayer().getUniqueId().toString() + Vtarget.getPlayer() + ".Vslots", VSlots);                               
+                  	saveConfig();
+                    reloadConfig();{
+    		    		p.sendMessage("Vip Player Item Bank Slots gespeichert");
+       return true; }
 }
-	return false;}}
+	return true;}}}
+	return false;
+	}}
+

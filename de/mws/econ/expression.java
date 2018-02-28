@@ -3,8 +3,6 @@ package de.mws.econ;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-
-
 import de.mws.econ.einstellungen;
 import de.mws.econ.konto;
 
@@ -63,9 +61,10 @@ public enum expression  {
     COMMAND_CLEAN( "Bereinigt die Konten mit dem Standardguthaben", true ),
     COMMAND_RELOAD( "Konfiguration neu laden", true );
 
+	
 
     private static konto plugin;
-
+   
     private final String defaultMessage;
 
     private final boolean categorized;
@@ -74,7 +73,7 @@ public enum expression  {
 
     private expression( String defaultMessage )
     {
-        this( defaultMessage, false );
+        this( defaultMessage, true );
     }
 
     private expression( String defaultMessage, boolean categorized )
@@ -155,6 +154,8 @@ public enum expression  {
     public class expressions
     {	einstellungen settings = einstellungen.getInstance();
 	  FileConfiguration data;
+	  FileConfiguration vdata;	  
+	  FileConfiguration ldata;	  
     konto plugin;}
     public void expressions( konto instance)
     {

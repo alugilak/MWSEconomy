@@ -1,15 +1,18 @@
 name: MultiWorldSystemEconomy
 main: de.mws.econ.konto
-version: 1.0
+version: 1.0.2
 description: recode based on the original Fe 
 website: https://www.spigotmc.org/resources/fe.723/
 load: startup
 
 commands:
-  itembank:
+  bankadmin:
+    usage: /<bankadmin> 
+    description: Open Itembank Menu
+  pib:
     usage: /<command> 
     description: Checks your Itembank /itembank
-  vipitembank:
+  vib:
     usage: /<command> 
     description: Checks your VipItembank /vipitembank   
   konto:

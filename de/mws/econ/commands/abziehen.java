@@ -43,6 +43,7 @@ public class abziehen extends SubCommand
 
         if( victim == null )
         {
+        	
         	expression.ACCOUNT_DOES_NOT_EXIST.sendWithPrefix( sender );
             return true;
         }
