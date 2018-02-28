@@ -30,10 +30,10 @@ softdepend:
 - Vault
 
 permissions:
-  konto.banking.use:
+  konto.pbank:
     description: Erlaubt es Spielern eine Itembank zu benutzen /itembank
     default: false
-  konto.vbanking.use:
+  konto.vbank:
     description: Erlaubt es Vip Spielern eine zusaetzliche VipItembank zu benutzen /vipitembank
     default: false    
   konto.konto:

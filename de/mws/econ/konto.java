@@ -86,7 +86,7 @@ File b2;
         saveDefaultConfig();
         this.saveConfig();
 	    saveConfig();	    
-	    saveResource("commands.yml", true);
+	    
 	    	
 	    this.settings.reloadData();
 	    this.settings.reloadb2Data();
@@ -576,7 +576,8 @@ File b2;
   		  p.sendMessage(ChatColor.AQUA+ "************************************************************");
   		  p.sendMessage(ChatColor.AQUA+ "For VIP Player Item Bank use " + ChatColor.DARK_PURPLE + " /bankadmin vb <PlayerName> <SlotAmount> ");  		 
   		  p.sendMessage(ChatColor.GREEN +  "************************************************************");
-  		  p.sendMessage(ChatColor.AQUA+ "Permissions Playerbank:" + ChatColor.DARK_PURPLE + " konto.banking.");  		 
+  		  p.sendMessage(ChatColor.AQUA+ "Permissions Playerbank:" + ChatColor.DARK_PURPLE + " konto.pbank konto.pbank.* ");
+  	   	p.sendMessage(ChatColor.AQUA+ "Permissions VIP-Playerbank:" + ChatColor.DARK_PURPLE + " konto.vbank konto.vbank.* ");  
 		  p.sendMessage(ChatColor.GREEN +  "************************************************************");}  else {         	       
         	if (args.length >=2) 
         		if (args[0].equalsIgnoreCase("pb")) {

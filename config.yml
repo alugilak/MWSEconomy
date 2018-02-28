@@ -6,6 +6,7 @@ BankName: Spieler Itembank
 Slots: 54
 PlayerImmuneInBank: true
 mwsvipbanking: konto.vbank
+mwsadminbanking: konto.bank.admin
 permErrorv: Dir fehlt die Berechtigung die Vip Itembank zu nutzen. konto.vbanking.use
 VipBankSaveMessageTitel: VipItemBank gespeichert
 VipBankName: Spieler Vip Itembank
