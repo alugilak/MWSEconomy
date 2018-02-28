@@ -563,7 +563,7 @@ File b2;
     }}}
     if (cmd.getName().equalsIgnoreCase("bankadmin")) 
     { if ((sender instanceof Player))  {    	    
-        if (!sender.hasPermission(getConfig().getString("mwsvipbanking")))
+        if (!sender.hasPermission(getConfig().getString("mwsadminbanking")))
         {
       	  sender.sendMessage(ChatColor.GOLD.toString() + ChatColor.BOLD + (getConfig().getString("SystemName")) + ChatColor.GOLD.toString() + ChatColor.BOLD + " >" + ChatColor.BLUE + (getConfig().getString("mwsvipbanking")) + " " + ChatColor.GREEN + (getConfig().getString("permErrorv")));
           p.getWorld().playEffect(p.getLocation(), Effect.GHAST_SHRIEK, 50);
@@ -577,7 +577,8 @@ File b2;
   		  p.sendMessage(ChatColor.AQUA+ "For VIP Player Item Bank use " + ChatColor.DARK_PURPLE + " /bankadmin vb <PlayerName> <SlotAmount> ");  		 
   		  p.sendMessage(ChatColor.GREEN +  "************************************************************");
   		  p.sendMessage(ChatColor.AQUA+ "Permissions Playerbank:" + ChatColor.DARK_PURPLE + " konto.pbank konto.pbank.* ");
-  	   	p.sendMessage(ChatColor.AQUA+ "Permissions VIP-Playerbank:" + ChatColor.DARK_PURPLE + " konto.vbank konto.vbank.* ");  
+  	   	p.sendMessage(ChatColor.AQUA+ "Permissions VIP-Playerbank:" + ChatColor.DARK_PURPLE + " konto.vbank konto.vbank.* "); 
+  	    p.sendMessage(ChatColor.AQUA+ "Permissions Bankadmin:" + ChatColor.DARK_PURPLE + " konto.bank.admin "); 
 		  p.sendMessage(ChatColor.GREEN +  "************************************************************");}  else {         	       
         	if (args.length >=2) 
         		if (args[0].equalsIgnoreCase("pb")) {
